@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
 """
 
 AM-Expert Hackathon - Data prep. and analysis
 
 ------------------------
-Created: Wed Oct 2, 2019
+Created: Oct 5, 2019
 
 @author: IME
 """
