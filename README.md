@@ -142,6 +142,6 @@ Submissions are evaluated on area under the ROC curve (AUC).
 
 ### Score - Leaderboard
 
-* Submitted solution: AUC = 0.8701 --- Rank: 268 (Pvt. LB)
+* Submitted solution (AmEx_XGB_LGB_blend.py): AUC = 0.8701 --- Rank: 268 (Pvt. LB)
 
 * Improved solution: AUC = xxx
