@@ -144,4 +144,8 @@ Submissions are evaluated on area under the ROC curve (AUC).
 
 * Submitted solution (AmEx_XGB_LGB_blend.py): AUC = 0.8701 --- Rank: 268 (Pvt. LB)
 
-* Improved solution: AUC = xxx
+<!--  internal validation scheme AUC = 0.9213 -->
+
+* Improved solution NOT submitted (to be uploaded soon): AUC = N/A
+
+<!--  internal validation scheme AUC = 0.98 -->
