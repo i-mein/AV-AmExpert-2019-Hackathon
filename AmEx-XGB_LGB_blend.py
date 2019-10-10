@@ -71,12 +71,9 @@ def data_split(df_all):
     # target and ID cols
     target = 'redemption_status'
     id_cols = ['id', 'campaign_id', 'coupon_id', 'customer_id']
-
     return df_train, df_test, target, id_cols
 
 #%% Load data
-
-# data_all = pd.read_csv("./data/data_encoded_2.csv", header=0, sep=',', decimal='.')
 data_all = pd.read_csv("./data/data_encoded_4.csv", header=0, sep=',', decimal='.')
 
 # split to train/test 
@@ -115,10 +112,9 @@ features = [
     #'no_of_children_code',
     'no_child_code_1', 'no_child_code_2', 'no_child_code_3']
 
-#%%% Split to train/val sets
-
-X_train, X_val, y_train, y_val = train_test_split(data_train[features], data_train[target_var], test_size=0.25,
-                                        shuffle=True, random_state=26) 
+#%% Split to train/val sets
+X_train, X_val, y_train, y_val = train_test_split(data_train[features], data_train[target_var], 
+                                                  test_size=0.25, shuffle=True, random_state=26) 
 
 print('Class distributions - Train: \n', y_train.value_counts(normalize=True))
 print('Class distributions - Val: \n', y_val.value_counts(normalize=True))
@@ -136,7 +132,6 @@ X_test = data_test[features]
 # del X_train, X_val, y_train, y_val, X_train_all, y_train_all, X_test
 
 #%% XGB 
-
 xgb_params = dict(
    learning_rate=0.01,     # 0.07
    n_estimators=1000,
@@ -152,26 +147,38 @@ xgb_params = dict(
 
 xgb_clf = xgb.XGBClassifier(**xgb_params)
 
-# cv XGB API
-#xgb.cv(xgb_params, xgb.DMatrix(X_train, label=y_train), nfold=10)
-
 # cv with 10-Fold
 # kf = KFold(n_splits=10, random_state=26, shuffle=True)
 # cv_score = cross_val_score(xgb_clf, X_train, y_train, cv=kf, scoring='roc_auc')
 # print(cv_score, np.mean(cv_score))
 
-# XGB fit
-xgb_clf.fit(X_train, y_train, early_stopping_rounds=100,
-            eval_metric='auc',
-            eval_set=[(X_train, y_train), (X_val, y_val)],
-            verbose=100)
+# # XGB fit for tuning
+# xgb_clf.fit(X_train, y_train, early_stopping_rounds=100,
+#             eval_metric='auc',
+#             eval_set=[(X_train, y_train), (X_val, y_val)],
+#             verbose=100)
 
+cvTrain = True     # True: for CV using XGB CV
+
+if cvTrain == True:    
+    # cv using XGB API
+    cvXGB = xgb.cv(xgb_params, xgb.DMatrix(X_train_all, label=y_train_all), nfold=10, 
+                   metrics='auc',
+                   num_boost_round=xgb_clf.get_params()['n_estimators'],  
+                   early_stopping_rounds=100)
+    
+    # set no. estimators
+    xgb_clf.set_params(n_estimators=cvXGB.shape[0])
+
+
+# XGB fit with ALL data
+xgb_clf.fit(X_train_all, y_train_all, eval_metric='auc')
+    
 # XGB predict
 xgb_pred_tr = xgb_clf.predict_proba(X_train)[:, 1]
 xgb_pred_val = xgb_clf.predict_proba(X_val)[:, 1]
 
 # XGB results
-print('\n XGB eval: \n')
 print(confusion_matrix(y_val, xgb_clf.predict(X_val)))
 print('')
 print('train AUC = %0.4f' % roc_auc_score(y_train, xgb_pred_tr))
@@ -179,7 +186,6 @@ print('val AUC = %0.4f' % roc_auc_score(y_val, xgb_pred_val))
 
 
 #%% Imp. Features XGB
-
 imp_features_df = pd.DataFrame()
 imp_features_df['Feature'] = X_train.columns
 imp_features_df['Importance'] = xgb_clf.feature_importances_
@@ -265,7 +271,7 @@ for train_index, test_index in kf.split(X_train_all, y_train_all):
     i = i + 1
     y_pred_tot.append(p)
 
-### 10-fold mean prediction
+# 10-fold mean prediction
 y_pred_lgb = np.mean(y_pred_tot, 0)
 
 plt.figure()
