@@ -140,12 +140,31 @@ customer_id	| Unique id for a customer
 Submissions are evaluated on area under the ROC curve (AUC). 
 
 
-### Score - Leaderboard
+## Leaderboard
 
-* Submitted solution (AmEx_XGB_LGB_blend.py): AUC = 0.8701 --- Rank: 268 (Pvt. LB)
+- Public LB score (AUC): 0.8701    # Pos: 307
+
+- Private LB score (AUC): 0.86197  # Pos: 268
+
+* Submitted solution: XGB/LGB ensemble 
+
+
+## Best scoring model: 
+
+..to be upladed soon.. 
+
+
+
+
+
+
+
+
+
 
 <!--  internal validation scheme AUC = 0.9213 -->
 
-* Improved solution NOT submitted (to be uploaded soon): AUC = N/A
+
+* Best scoring model (NOT submitted): AUC = 0.918   (to be uploaded soon..)
 
 <!--  internal validation scheme AUC = 0.98 -->
